@@ -47,12 +47,11 @@ config:
   # default). If you switch to a non-root securityContext, point this at a
   # writable directory such as /app/data/segments_manager.log.
   logFile: "segments_manager.log"
-  # Base URL of the segment-connectivity workflow's unified FastAPI service (api.py in
-  # the workflows repo) - REQUIRED. Every segment creation triggers the
-  # segment-connectivity workflow there. Bare service name resolves only in-namespace;
-  # cross-namespace callers must use the FQDN
-  # (e.g. http://workflows-api.redbull-workflows.svc.cluster.local:8080).
-  workflowsApiUrl: "http://workflows-api:8080"
+  # (No workflowsApiUrl: this service calls nothing. The segment-connectivity
+  # workflow is triggered directly by its caller and calls POST /api/segments
+  # here as its own first step, so the whole segment lifecycle lives in one
+  # Temporal run instead of starting outside it. Traffic between the two
+  # namespaces now flows redbull-workflows -> segments-manager only.)
 # MongoDB Configuration
 mongodb:
   # MongoDB connection URL - REQUIRED (stored in Secret)

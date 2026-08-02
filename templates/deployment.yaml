@@ -88,15 +88,11 @@ spec:
                 configMapKeyRef:
                   name: {{ include "segments-manager.fullname" . }}
                   key: MONGODB_TLS_INSECURE
-            # Segment-connectivity workflow API (segment-connectivity workflow trigger).
-            # Required by the app at startup (src/config/settings.py). The app now
-            # reads CONNECTIVITY_WORKFLOW_API_URL (renamed from WORKFLOWS_API_URL);
-            # the ConfigMap key kept its name, so map it onto the new env var name.
-            - name: CONNECTIVITY_WORKFLOW_API_URL
-              valueFrom:
-                configMapKeyRef:
-                  name: {{ include "segments-manager.fullname" . }}
-                  key: WORKFLOWS_API_URL
+            # (No workflow-API env var. The app no longer calls the workflows
+            # API at all — see the ConfigMap. This used to be the one place the
+            # two services' env-var names had to be kept in sync by hand, and
+            # they had already drifted: the chart mapped the ConfigMap key onto
+            # CONNECTIVITY_WORKFLOW_API_URL while the app read WORKFLOWS_API_URL.)
             # MongoDB URL from Secret
             - name: MONGODB_URL
               valueFrom:

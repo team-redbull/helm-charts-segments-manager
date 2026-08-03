@@ -6,7 +6,7 @@ fullnameOverride: ""
 # Image configuration
 image:
   repository: ghcr.io/team-redbull/segments-manager
-  tag: refactor-segments-manager-5d7f1ac
+  tag: refactor-segments-manager-535c867
   pullPolicy: IfNotPresent
   pullSecrets: []
 # Pod configuration
@@ -54,7 +54,6 @@ route:
 # into every environment forever. Empty + the fail guard in
 # templates/configmap.yaml is the only safe shape.
 siteNetworks: {}
-
 # Application ConfigMap
 config:
   serverHost: "0.0.0.0"

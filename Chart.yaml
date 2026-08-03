@@ -3,7 +3,7 @@ name: segments-manager
 description: A FastAPI-based VLAN segment management system with site-specific IP validation and advanced filtering
 type: application
 version: 2.0.0
-appVersion: "refactor-segments-manager-5d7f1ac"
+appVersion: "refactor-segments-manager-535c867"
 keywords:
   - vlan
   - network

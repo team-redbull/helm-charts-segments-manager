@@ -59,16 +59,6 @@ spec:
                 configMapKeyRef:
                   name: {{ include "segments-manager.fullname" . }}
                   key: SITE_NETWORKS
-            # TRANSITIONAL, paired with the SITE_PREFIXES key in configmap.yaml.
-            # Removed in the same commit as that key, once every replica runs an
-            # image that reads SITE_NETWORKS. The new image tolerates both being
-            # set (it warns and ignores SITE_PREFIXES); the old image requires
-            # SITE_PREFIXES and refuses to start without it.
-            - name: SITE_PREFIXES
-              valueFrom:
-                configMapKeyRef:
-                  name: {{ include "segments-manager.fullname" . }}
-                  key: SITE_PREFIXES
             # Server configuration from ConfigMap
             - name: SERVER_HOST
               valueFrom:

@@ -19,16 +19,6 @@ data:
   # than sprig `required`, which only rejects nil/"" and would let an empty map
   # through as the string "{}" — a pod-startup failure instead of a render one.
   SITE_NETWORKS: {{ .Values.siteNetworks | toJson | quote }}
-  # TRANSITIONAL (removed once every replica runs an image that reads
-  # SITE_NETWORKS). The running image still requires SITE_PREFIXES and refuses
-  # to start without it, so this ConfigMap has to carry BOTH keys while the
-  # image rolls. Projected from siteNetworks — first octet of each site's pool —
-  # rather than hardcoded, so the old key and the new one cannot disagree.
-{{- $prefixes := list }}
-{{- range $site, $networks := .Values.siteNetworks }}
-{{- $prefixes = append $prefixes (printf "%s:%s" $site (first (splitList "." $networks.pool))) }}
-{{- end }}
-  SITE_PREFIXES: {{ join "," $prefixes | quote }}
 
   # Server configuration
   SERVER_HOST: {{ .Values.config.serverHost | quote }}

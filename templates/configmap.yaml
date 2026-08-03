@@ -8,9 +8,27 @@ metadata:
   annotations:
     {{- toYaml . | nindent 4 }}
   {{- end }}
+{{- if not .Values.siteNetworks }}
+{{- fail "siteNetworks is empty. Define it once in redbull-platform (gitops/values/<env>.yaml, key `siteNetworks`); the ApplicationSet merges that file in ahead of this chart's values." }}
+{{- end }}
 data:
-  # Site configuration
-  SITE_PREFIXES: {{ .Values.config.sitePrefixes | quote }}
+  # Site configuration. The SAME structure is rendered into
+  # helm-charts-segment-connectivity's ConfigMap from the SAME shared value, so
+  # the two services cannot disagree about which sites exist. This service reads
+  # each site's `pool`; segment-connectivity reads `bmc`. `fail` above rather
+  # than sprig `required`, which only rejects nil/"" and would let an empty map
+  # through as the string "{}" — a pod-startup failure instead of a render one.
+  SITE_NETWORKS: {{ .Values.siteNetworks | toJson | quote }}
+  # TRANSITIONAL (removed once every replica runs an image that reads
+  # SITE_NETWORKS). The running image still requires SITE_PREFIXES and refuses
+  # to start without it, so this ConfigMap has to carry BOTH keys while the
+  # image rolls. Projected from siteNetworks — first octet of each site's pool —
+  # rather than hardcoded, so the old key and the new one cannot disagree.
+{{- $prefixes := list }}
+{{- range $site, $networks := .Values.siteNetworks }}
+{{- $prefixes = append $prefixes (printf "%s:%s" $site (first (splitList "." $networks.pool))) }}
+{{- end }}
+  SITE_PREFIXES: {{ join "," $prefixes | quote }}
 
   # Server configuration
   SERVER_HOST: {{ .Values.config.serverHost | quote }}

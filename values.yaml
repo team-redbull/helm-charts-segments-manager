@@ -37,9 +37,26 @@ route:
     enabled: true
     termination: edge
     insecureEdgeTerminationPolicy: Redirect
+# Site network topology — site name -> {pool, bmc}.
+#
+#   pool  the CIDR every segment at that site must fall inside (this service)
+#   bmc   the site's out-of-band management network (segment-connectivity;
+#         this service reads it only to check no pool collides with it)
+#
+# Deliberately EMPTY here, and it must stay that way. This value is defined once
+# in redbull-platform (gitops/values/<env>.yaml, key `siteNetworks`), which the
+# ApplicationSet merges in ahead of this file, and rendered into BOTH this
+# chart's ConfigMap and helm-charts-segment-connectivity's — that shared
+# definition is what keeps the two services' site lists identical.
+#
+# Helm DEEP-MERGES maps: a non-empty default here would NOT be replaced by the
+# environment's value, it would merge with it, silently leaking a stale site
+# into every environment forever. Empty + the fail guard in
+# templates/configmap.yaml is the only safe shape.
+siteNetworks: {}
+
 # Application ConfigMap
 config:
-  sitePrefixes: "site1:192,site2:193,site3:194"
   serverHost: "0.0.0.0"
   serverPort: "8000"
   logLevel: "INFO"

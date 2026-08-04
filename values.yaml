@@ -6,7 +6,7 @@ fullnameOverride: ""
 # Image configuration
 image:
   repository: ghcr.io/team-redbull/segments-manager
-  tag: refactor-segments-manager-4fe5095
+  tag: refactor-segments-manager-9a580f7
   pullPolicy: IfNotPresent
   pullSecrets: []
 # Pod configuration
